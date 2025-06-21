@@ -6,7 +6,7 @@ const app = express();
 const port = 3000;
 const mongoose = require('mongoose');
 // const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-const DB_URL=process.env.ATLASBD_URL;
+const DB_URL = process.env.ATLASBD_URL;
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require("passport");
@@ -19,15 +19,15 @@ const userRouter = require("./routes/user.js");
 const reviewsRouter = require("./routes/review.js");
 
 const cors = require('cors');
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://delta-student-frontend.onrender.com'
-];
+
+
 
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
+  origin: ['http://localhost:5173', 'https://delta-student-frontend.onrender.com'],
+  credentials: true
 }));
+
+
 
 // app.options('*', cors());
 
@@ -36,15 +36,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const store = MongoStore.create({
-  mongoUrl:DB_URL,
-  crypto:{
-    secret:process.env.SECRET,
+  mongoUrl: DB_URL,
+  crypto: {
+    secret: process.env.SECRET,
   },
-  touchAfter: 24*3600,
+  touchAfter: 24 * 3600,
 });
 
-store.on("error",()=>{
-  console.log("error in mongo session store ",err);
+store.on("error", () => {
+  console.log("error in mongo session store ", err);
 })
 // ✅ Session setup BEFORE passport
 const sessionOptions = {
@@ -54,9 +54,12 @@ const sessionOptions = {
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    secure: process.env.NODE_ENV === 'production', // ✅
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
+
+
 };
 app.use(session(sessionOptions));
 
@@ -78,7 +81,7 @@ app.get("/", (req, res) => {
 });
 
 // // ✅ Then mount route
-app.use("/", userRouter); 
+app.use("/", userRouter);
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 
