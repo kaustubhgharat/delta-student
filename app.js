@@ -19,10 +19,18 @@ const userRouter = require("./routes/user.js");
 const reviewsRouter = require("./routes/review.js");
 
 const cors = require('cors');
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://delta-student-frontend.onrender.com'
+];
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: allowedOrigins,
   credentials: true
 }));
+
+app.options('*', cors());
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
