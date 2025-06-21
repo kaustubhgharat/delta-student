@@ -73,10 +73,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Then mount route
-app.use("/", userRouter); // includes /check-auth
-app.use("/listings", listingsRouter);
-app.use("/listings/:id/reviews", reviewsRouter);
+// // ✅ Then mount route
+// app.use("/", userRouter); 
+// app.use("/listings", listingsRouter);
+// app.use("/listings/:id/reviews", reviewsRouter);
 
 // ✅ Error handler
 app.use((err, req, res, next) => {
