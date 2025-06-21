@@ -24,12 +24,12 @@ const allowedOrigins = [
   'https://delta-student-frontend.onrender.com'
 ];
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+// app.use(cors({
+//   origin: allowedOrigins,
+//   credentials: true
+// }));
 
-app.options('*', cors());
+// app.options('*', cors());
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -58,19 +58,23 @@ const sessionOptions = {
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
 };
-app.use(session(sessionOptions));
+// app.use(session(sessionOptions));
 
 // ✅ Passport setup
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(new LocalStrategy(User.authenticate()));
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 // ✅ Must be BEFORE your routes
-app.use((req, res, next) => {
-  res.locals.currUser = req.user;
-  next();
+// app.use((req, res, next) => {
+//   res.locals.currUser = req.user;
+//   next();
+// });
+
+app.get("/", (req, res) => {
+  res.send("Server running ✅");
 });
 
 // // ✅ Then mount route
@@ -79,10 +83,10 @@ app.use((req, res, next) => {
 // app.use("/listings/:id/reviews", reviewsRouter);
 
 // ✅ Error handler
-app.use((err, req, res, next) => {
-  const { status = 500, message = "Something went wrong" } = err;
-  res.status(status).json({ error: message });
-});
+// app.use((err, req, res, next) => {
+//   const { status = 500, message = "Something went wrong" } = err;
+//   res.status(status).json({ error: message });
+// });
 
 // ✅ DB connect + server start
 main().then(() => {
