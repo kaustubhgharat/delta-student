@@ -58,14 +58,14 @@ const sessionOptions = {
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
 };
-// app.use(session(sessionOptions));
+app.use(session(sessionOptions));
 
 // ✅ Passport setup
-// app.use(passport.initialize());
-// app.use(passport.session());
-// passport.use(new LocalStrategy(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // ✅ Must be BEFORE your routes
 // app.use((req, res, next) => {
