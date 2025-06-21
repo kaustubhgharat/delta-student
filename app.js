@@ -20,12 +20,22 @@ const reviewsRouter = require("./routes/review.js");
 
 const cors = require('cors');
 
+allowedOrigins = [
+  'http://localhost:5173',
+  'https://delta-student-frontend.onrender.com'
+]
 
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://delta-student-frontend.onrender.com'],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
+
 
 
 
