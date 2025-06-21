@@ -11,12 +11,13 @@ router.post("/logout",userController.logout);
 
 
 // GET /users/check-auth
-router.get("/check-auth", (req, res) => {
+router.get('/check-auth', (req, res) => {
   if (req.isAuthenticated()) {
-    return res.json({ user: req.user }); // You may return only { username: req.user.username } if you prefer
+    res.json({ authenticated: true, user: req.user });
   } else {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ authenticated: false });
   }
 });
+
 
 module.exports = router;
