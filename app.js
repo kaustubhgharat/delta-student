@@ -78,7 +78,7 @@ app.get("/", (req, res) => {
 });
 
 // // ✅ Then mount route
-// app.use("/", userRouter); 
+app.use("/", userRouter); 
 // app.use("/listings", listingsRouter);
 // app.use("/listings/:id/reviews", reviewsRouter);
 
