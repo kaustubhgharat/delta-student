@@ -83,10 +83,10 @@ app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 
 // ✅ Error handler
-// app.use((err, req, res, next) => {
-//   const { status = 500, message = "Something went wrong" } = err;
-//   res.status(status).json({ error: message });
-// });
+app.use((err, req, res, next) => {
+  const { status = 500, message = "Something went wrong" } = err;
+  res.status(status).json({ error: message });
+});
 
 // ✅ DB connect + server start
 main().then(() => {
