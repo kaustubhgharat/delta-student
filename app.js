@@ -68,10 +68,10 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // ✅ Must be BEFORE your routes
-// app.use((req, res, next) => {
-//   res.locals.currUser = req.user;
-//   next();
-// });
+app.use((req, res, next) => {
+  res.locals.currUser = req.user;
+  next();
+});
 
 app.get("/", (req, res) => {
   res.send("Server running ✅");
