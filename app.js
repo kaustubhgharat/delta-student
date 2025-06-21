@@ -24,12 +24,12 @@ const allowedOrigins = [
   'https://delta-student-frontend.onrender.com'
 ];
 
-// app.use(cors({
-//   origin: allowedOrigins,
-//   credentials: true
-// }));
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
-// app.options('*', cors());
+app.options('*', cors());
 
 
 app.use(express.urlencoded({ extended: true }));
