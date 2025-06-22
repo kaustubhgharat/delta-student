@@ -19,24 +19,32 @@ const userRouter = require("./routes/user.js");
 const reviewsRouter = require("./routes/review.js");
 
 const cors = require('cors');
-
-allowedOrigins = [
-  'http://localhost:5173',
-  'https://delta-student-frontend.onrender.com'
-]
-
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error('Not allowed by CORS'));
-  },
+  origin: "https://delta-student-frontend.onrender.com", // Frontend Render URL
   credentials: true
 }));
 
+app.use(session({
+  secret: "keyboard cat", // replace with env secret
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: true, // ✅ Required for HTTPS (Render is HTTPS)
+    sameSite: "none" // ✅ Required for cross-site cookies
+  }
+}));
 
+// app.use(session({
+//   secret: "keyboard cat", // use a strong secret in production
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: {
+//     httpOnly: true,
+//     secure: false, // Set to true **only** if you're using HTTPS
+//     sameSite: "lax" // or "none" if frontend is on a different domain with credentials
+//   }
+// }));
 
 
 // app.options('*', cors());
