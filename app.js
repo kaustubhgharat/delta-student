@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -14,10 +15,13 @@ const userRouter = require('./routes/user.js');
 const reviewsRouter = require('./routes/review.js');
 
 const app = express();
+
 const port = process.env.PORT || 3000;
 const DB_URL = process.env.ATLASBD_URL;
 const SESSION_SECRET = process.env.SECRET || 'keyboard cat'; // fallback just in case
 
+
+app.set("trust proxy", 1);
 // ✅ CORS config
 app.use(cors({
   origin: "https://delta-student-frontend.onrender.com",
