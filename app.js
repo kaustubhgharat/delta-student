@@ -1,80 +1,57 @@
-// Required imports and constants
-require('dotenv').config()
+require('dotenv').config();
 
 const express = require('express');
-const app = express();
-const port = 3000;
 const mongoose = require('mongoose');
-// const  DB_URL= "mongodb://127.0.0.1:27017/wanderlust";
-const DB_URL = process.env.ATLASBD_URL;
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
-const User = require("./models/user.js");
-
-// Routes
-const listingsRouter = require("./routes/listing.js");
-const userRouter = require("./routes/user.js");
-const reviewsRouter = require("./routes/review.js");
-
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 const cors = require('cors');
+
+const User = require('./models/user.js');
+const listingsRouter = require('./routes/listing.js');
+const userRouter = require('./routes/user.js');
+const reviewsRouter = require('./routes/review.js');
+
+const app = express();
+const port = process.env.PORT || 3000;
+const DB_URL = process.env.ATLASBD_URL;
+const SESSION_SECRET = process.env.SECRET || 'keyboard cat'; // fallback just in case
+
+// ✅ CORS config
 app.use(cors({
-  origin: "https://delta-student-frontend.onrender.com", // Frontend Render URL
+  origin: "https://delta-student-frontend.onrender.com",
   credentials: true
 }));
 
-app.use(session({
-  secret: "keyboard cat", // replace with env secret
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: true, // ✅ Required for HTTPS (Render is HTTPS)
-    sameSite: "none" // ✅ Required for cross-site cookies
-  }
-}));
-
-// app.use(session({
-//   secret: "keyboard cat", // use a strong secret in production
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: {
-//     httpOnly: true,
-//     secure: false, // Set to true **only** if you're using HTTPS
-//     sameSite: "lax" // or "none" if frontend is on a different domain with credentials
-//   }
-// }));
-
-
-// app.options('*', cors());
-
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
+// ✅ MongoDB session store
 const store = MongoStore.create({
   mongoUrl: DB_URL,
   crypto: {
-    secret: process.env.SECRET,
+    secret: SESSION_SECRET
   },
-  touchAfter: 24 * 3600,
+  ttl: 24 * 60 * 60 // 1 day
+});
+store.on("error", (err) => {
+  console.log("Mongo Store Error:", err);
 });
 
-store.on("error", () => {
-  console.log("error in mongo session store ", err);
-})
-// ✅ Session setup BEFORE passport
+// ✅ Session middleware (with persistent store)
 app.use(session({
-  secret: "keyboard cat", // use a strong secret in production
+  secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  store,
   cookie: {
     httpOnly: true,
-    secure: false, // Set to true **only** if you're using HTTPS
-    sameSite: "lax" // or "none" if frontend is on a different domain with credentials
+    secure: true,          // ✅ Render uses HTTPS
+    sameSite: "none"       // ✅ Required for cross-site credentials
   }
 }));
+
+// ✅ JSON & form middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ✅ Passport setup
 app.use(passport.initialize());
@@ -83,17 +60,16 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// ✅ Must be BEFORE your routes
+// Optional user data available in templates (if needed)
 app.use((req, res, next) => {
   res.locals.currUser = req.user;
   next();
 });
 
+// ✅ Routes
 app.get("/", (req, res) => {
   res.send("Server running ✅");
 });
-
-// // ✅ Then mount route
 app.use("/", userRouter);
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
@@ -104,9 +80,9 @@ app.use((err, req, res, next) => {
   res.status(status).json({ error: message });
 });
 
-// ✅ DB connect + server start
+// ✅ DB connection and server startup
 main().then(() => {
-  console.log("connected to DB");
+  console.log("Connected to DB");
 }).catch(console.error);
 
 async function main() {
@@ -114,5 +90,5 @@ async function main() {
 }
 
 app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
+  console.log(`App listening on port ${port}`);
 });
