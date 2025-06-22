@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const userController = require("../controllers/user")
 
+router.get("/login", (req, res) => {
+  res.send("Login route exists, but use POST to login.");
+});
+
 
 router.post("/signup", userController.signup);
 

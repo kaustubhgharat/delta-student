@@ -5,8 +5,8 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const mongoose = require('mongoose');
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-const DB_URL = process.env.ATLASBD_URL;
+const  DB_URL= "mongodb://127.0.0.1:27017/wanderlust";
+// const DB_URL = process.env.ATLASBD_URL;
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require("passport");
@@ -57,21 +57,16 @@ store.on("error", () => {
   console.log("error in mongo session store ", err);
 })
 // ✅ Session setup BEFORE passport
-const sessionOptions = {
-  store,
-  secret: process.env.SECRET,
+app.use(session({
+  secret: "keyboard cat", // use a strong secret in production
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // ✅
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    secure: false, // Set to true **only** if you're using HTTPS
+    sameSite: "lax" // or "none" if frontend is on a different domain with credentials
   }
-
-
-};
-app.use(session(sessionOptions));
+}));
 
 // ✅ Passport setup
 app.use(passport.initialize());
