@@ -42,20 +42,6 @@ Wanderlust is a full-stack Airbnb-inspired web application built using the MERN 
 
 > Replace these with your actual deployed links.
 
----
-
-## 🖼️ Screenshots
-
-### Home Page
-![Home](./assets/homepage.png)
-
-### Listing Page
-![Listing](./assets/listing.png)
-
-### Add New Property
-![Add Property](./assets/addproperty.png)
-
-> Put your actual screenshots in `/assets` folder and link them here.
 
 ---
 
@@ -70,18 +56,36 @@ Wanderlust is a full-stack Airbnb-inspired web application built using the MERN 
 💻 Installation
 
 1. Clone the repositories:
---------------------------------------------------
+
 # Backend
 git clone https://github.com/kaustubhgharat/delta-student.git
 
 # Frontend
 git clone https://github.com/kaustubhgharat/delta-student-FrontEnd.git
+
 --------------------------------------------------
 
-# In a new terminal, start frontend
+2. Start the Backend
+
+Open a new terminal
+cd delta-student
+npm install
+npm install express --save
+npm install nodemon --save-dev
+nodemon app.js
+
+--------------------------------------------------
+
+3. Start the Frontend
+
+Open another terminal
+cd delta-student-FrontEnd
 cd ./Delta
+npm install
 npm run dev
+
 --------------------------------------------------
 
-5. Open in browser:
+4. Open the application in your browser:
 http://localhost:5173
+
